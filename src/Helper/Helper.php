@@ -34,11 +34,12 @@ class Helper
         return (int)number_format($amount, 2, '', '');
     }
 
-    public static function getResponseByXML($xml)
+    public static function getResponseByXML($xml, $requestRawData)
     {
         $response = new Response();
 
         $response->setRawData($xml);
+        $response->setRequestRawData($requestRawData);
 
         $data = new stdClass();
 

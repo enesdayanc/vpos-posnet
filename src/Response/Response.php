@@ -20,6 +20,7 @@ class Response
     private $redirectMethod;
     private $redirectData;
     private $rawData;
+    private $requestRawData;
 
     /**
      * @return bool
@@ -179,5 +180,21 @@ class Response
     public function setRawData($rawData)
     {
         $this->rawData = $rawData;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequestRawData()
+    {
+        return $this->requestRawData;
+    }
+
+    /**
+     * @param mixed $requestRawData
+     */
+    public function setRequestRawData($requestRawData)
+    {
+        $this->requestRawData = $requestRawData;
     }
 }
