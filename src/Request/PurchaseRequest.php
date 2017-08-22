@@ -104,11 +104,6 @@ class PurchaseRequest implements RequestInterface
         $this->useKoi = $useKoi;
     }
 
-    public function getType()
-    {
-        // TODO: Implement getType() method.
-    }
-
     public function validate()
     {
         Validator::validateNotEmpty('card', $this->getCard());

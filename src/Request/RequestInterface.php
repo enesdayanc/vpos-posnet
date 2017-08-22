@@ -13,8 +13,6 @@ use PaymentGateway\VPosPosnet\Setting\Setting;
 
 interface RequestInterface
 {
-    public function getType();
-
     public function validate();
 
     public function toXmlString(Setting $setting);
