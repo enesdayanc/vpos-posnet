@@ -1,0 +1,30 @@
+{
+  "name": "enesdayanc/vpos-posnet",
+  "type": "library",
+  "description": "posnet virtual pos",
+  "homepage": "http://enesdayanc.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Enes Dayanç",
+      "homepage": "http://enesdayanc.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "guzzlehttp/guzzle": "~6.0",
+    "spatie/array-to-xml": "^2.5",
+    "enesdayanc/iso4217": "^3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "PaymentGateway\\VPosPosnet\\": "src/"
+    },
+    "exclude-from-classmap": [
+      "tests/"
+    ]
+  }
+}
