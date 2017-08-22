@@ -10,6 +10,8 @@ namespace PaymentGateway\VPosPosnet;
 
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 use PaymentGateway\VPosPosnet\Model\Card;
+use PaymentGateway\VPosPosnet\Request\AuthorizeRequest;
+use PaymentGateway\VPosPosnet\Request\CaptureRequest;
 use PaymentGateway\VPosPosnet\Request\PurchaseRequest;
 use PaymentGateway\VPosPosnet\Response\Response;
 use PaymentGateway\VPosPosnet\Setting\Credential;
@@ -49,7 +51,7 @@ class VposTest extends TestCase
 
         $this->card = $card;
 
-        $this->amount = rand(1, 1000);
+        $this->amount = rand(1, 100);
         $this->orderId = 'MO' . substr(md5(microtime() . rand()), 0, 20);
         $this->userId = md5(microtime() . rand());
         $this->installment = rand(1, 6);
@@ -110,5 +112,82 @@ class VposTest extends TestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('cvc-maxInclusive-valid', $response->getErrorCode());
+    }
+
+    public function testAuthorize()
+    {
+        $authorizeRequest = new AuthorizeRequest();
+
+        $authorizeRequest->setCard($this->card);
+        $authorizeRequest->setOrderId($this->orderId);
+        $authorizeRequest->setAmount($this->amount);
+        $authorizeRequest->setInstallment($this->installment);
+
+        $response = $this->vPos->authorize($authorizeRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+
+        return array(
+            'orderId' => $this->orderId,
+            'amount' => $this->amount,
+            'userId' => $this->userId,
+            'transactionReference' => $response->getTransactionReference(),
+        );
+    }
+
+    public function testAuthorizeFail()
+    {
+        $authorizeRequest = new AuthorizeRequest();
+
+        $authorizeRequest->setCard($this->card);
+        $authorizeRequest->setOrderId(1);
+        $authorizeRequest->setAmount($this->amount);
+        $authorizeRequest->setInstallment($this->installment);
+
+        $response = $this->vPos->authorize($authorizeRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertFalse($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('0127', $response->getErrorCode());
+    }
+
+
+    /**
+     * @depends testAuthorize
+     * @param $params
+     */
+    public function testCapture($params)
+    {
+        sleep(2);
+        $captureRequest = new CaptureRequest();
+
+        $captureRequest->setTransactionReference($params['transactionReference']);
+        $captureRequest->setAmount($params['amount']);
+        $captureRequest->setInstallment(1);
+
+        $response = $this->vPos->capture($captureRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+    }
+
+    public function testCaptureFail()
+    {
+        $captureRequest = new CaptureRequest();
+
+        $captureRequest->setTransactionReference('0000000041P0502141');
+        $captureRequest->setAmount($this->amount);
+        $captureRequest->setInstallment(1);
+
+        $response = $this->vPos->capture($captureRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertFalse($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('0123', $response->getErrorCode());
     }
 }

@@ -130,7 +130,7 @@ class PurchaseRequest implements RequestInterface
         );
 
         /*
-         * Create Sale
+         * Create sale
          */
         $sale = array(
             "ccno" => $card->getCreditCardNumber(),

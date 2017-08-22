@@ -4,6 +4,8 @@ namespace PaymentGateway\VPosPosnet;
 
 use Exception;
 use GuzzleHttp\Client;
+use PaymentGateway\VPosPosnet\Request\AuthorizeRequest;
+use PaymentGateway\VPosPosnet\Request\CaptureRequest;
 use PaymentGateway\VPosPosnet\Request\PurchaseRequest;
 use PaymentGateway\VPosPosnet\Request\RequestInterface;
 use PaymentGateway\VPosPosnet\Response\Response;
@@ -18,6 +20,16 @@ class VPos
     {
         $this->setting = $setting;
         $this->setting->validate();
+    }
+
+    public function authorize(AuthorizeRequest $authorizeRequest)
+    {
+        return $this->send($authorizeRequest, $this->setting->getAuthorizeUrl());
+    }
+
+    public function capture(CaptureRequest $captureRequest)
+    {
+        return $this->send($captureRequest, $this->setting->getCaptureUrl());
     }
 
     public function purchase(PurchaseRequest $purchaseRequest)
