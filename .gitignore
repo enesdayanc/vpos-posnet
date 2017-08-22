@@ -1,0 +1,8 @@
+# General
+*.DS_Store
+.AppleDouble
+.LSOverride
+/vendor
+composer.lock
+composer.phar
+/.idea
