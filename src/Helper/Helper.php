@@ -12,6 +12,7 @@ namespace PaymentGateway\VPosPosnet\Helper;
 use Exception;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 use PaymentGateway\VPosPosnet\Response\Response;
+use ReflectionClass;
 use SimpleXMLElement;
 use Spatie\ArrayToXml\ArrayToXml;
 use stdClass;
@@ -102,5 +103,11 @@ class Helper
             'code' => $code,
             'message' => $message,
         );
+    }
+
+    public static function getConstants($class)
+    {
+        $oClass = new ReflectionClass ($class);
+        return $oClass->getConstants();
     }
 }

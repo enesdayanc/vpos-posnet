@@ -8,11 +8,14 @@
 
 namespace PaymentGateway\VPosPosnet;
 
+use PaymentGateway\VPosPosnet\Constant\ReverseTransaction;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 use PaymentGateway\VPosPosnet\Model\Card;
 use PaymentGateway\VPosPosnet\Request\AuthorizeRequest;
 use PaymentGateway\VPosPosnet\Request\CaptureRequest;
 use PaymentGateway\VPosPosnet\Request\PurchaseRequest;
+use PaymentGateway\VPosPosnet\Request\RefundRequest;
+use PaymentGateway\VPosPosnet\Request\VoidRequest;
 use PaymentGateway\VPosPosnet\Response\Response;
 use PaymentGateway\VPosPosnet\Setting\Credential;
 use PaymentGateway\VPosPosnet\Setting\YapiKrediTest;
@@ -77,7 +80,35 @@ class VposTest extends TestCase
             'orderId' => $this->orderId,
             'amount' => $this->amount,
             'userId' => $this->userId,
-            'refNumber' => $response->getTransactionReference(),
+            'transactionReference' => $response->getTransactionReference(),
+        );
+    }
+
+    public function testPurchaseForVoid()
+    {
+        $purchaseRequest = new PurchaseRequest();
+
+        $purchaseRequest->setCard($this->card);
+        $purchaseRequest->setOrderId($this->orderId);
+        $purchaseRequest->setAmount($this->amount);
+        $purchaseRequest->setCurrency($this->currency);
+        $purchaseRequest->setUserId($this->userId);
+        $purchaseRequest->setInstallment($this->installment);
+        $purchaseRequest->setIp('198.168.1.1');
+        $purchaseRequest->setEmail('enes.dayanc@modanisa.com.tr');
+
+        $response = $this->vPos->purchase($purchaseRequest);
+
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+
+        return array(
+            'orderId' => $this->orderId,
+            'amount' => $this->amount,
+            'userId' => $this->userId,
+            'transactionReference' => $response->getTransactionReference(),
         );
     }
 
@@ -189,5 +220,41 @@ class VposTest extends TestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('0123', $response->getErrorCode());
+    }
+
+    /**
+     * @depends testPurchase
+     * @param $params
+     */
+    public function testRefund($params)
+    {
+        $refundRequest = new RefundRequest();
+        $refundRequest->setAmount($params['amount'] / 2);
+        $refundRequest->setTransactionReference($params['transactionReference']);
+
+        $response = $this->vPos->refund($refundRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+
+        return $params;
+    }
+
+    /**
+     * @depends testPurchaseForVoid
+     * @param $params
+     */
+    public function testVoid($params)
+    {
+        $voidRequest = new VoidRequest();
+        $voidRequest->setTransactionReference($params['transactionReference']);
+        $voidRequest->setReverseTransaction(ReverseTransaction::SALE);
+
+        $response = $this->vPos->void($voidRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
     }
 }

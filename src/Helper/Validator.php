@@ -8,6 +8,7 @@
 
 namespace PaymentGateway\VPosPosnet\Helper;
 
+use PaymentGateway\VPosPosnet\Constant\ReverseTransaction;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 
 class Validator
@@ -81,6 +82,13 @@ class Validator
     {
         if (empty($value) || strlen($value) > 24) {
             throw new ValidationException('Invalid Order Id', 'INVALID_ORDER_ID');
+        }
+    }
+
+    public static function validateReverseTransaction($value)
+    {
+        if (!in_array($value, Helper::getConstants(ReverseTransaction::class))) {
+            throw new ValidationException('Invalid Reverse Transaction', 'INVALID_REVERSE_TRANSACTION');
         }
     }
 }
