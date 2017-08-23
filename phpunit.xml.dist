@@ -20,6 +20,7 @@
         </whitelist>
     </filter>
     <php>
+        <const name="POSNET_ID" value="#####"/>
         <const name="MERCHANT_ID" value="##########"/>
         <const name="TERMINAL_ID" value="########"/>
     </php>
