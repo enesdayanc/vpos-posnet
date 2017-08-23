@@ -41,4 +41,9 @@ class YapiKrediTest extends Setting
     {
         return 'http://setmpos.ykb.com/PosnetWebService/XML';
     }
+
+    public function getOosUrl()
+    {
+        return 'http://setmpos.ykb.com/PosnetWebService/XML';
+    }
 }

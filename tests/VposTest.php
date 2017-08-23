@@ -38,11 +38,13 @@ class VposTest extends TestCase
     public function setUp()
     {
         $credential = new Credential();
+        $credential->setPosnetId(POSNET_ID);
         $credential->setMerchantId(MERCHANT_ID);
         $credential->setTerminalId(TERMINAL_ID);
 
         $settings = new YapiKrediTest();
         $settings->setCredential($credential);
+        $settings->setThreeDReturnUrl('http://enesdayanc.com');
 
         $this->vPos = new VPos($settings);
 
@@ -55,7 +57,7 @@ class VposTest extends TestCase
         $this->card = $card;
 
         $this->amount = rand(1, 100);
-        $this->orderId = 'MO' . substr(md5(microtime() . rand()), 0, 20);
+        $this->orderId = 'MO' . substr(md5(microtime() . rand()), 0, 10);
         $this->userId = md5(microtime() . rand());
         $this->installment = rand(1, 6);
         $this->userIp = '192.168.1.1';
@@ -253,5 +255,46 @@ class VposTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
+    }
+
+
+    public function test3DPurchaseFormCreate()
+    {
+        $purchaseRequest = new PurchaseRequest();
+
+        $purchaseRequest->setCard($this->card);
+        $purchaseRequest->setOrderId($this->orderId);
+        $purchaseRequest->setAmount($this->amount);
+        $purchaseRequest->setInstallment($this->installment);
+
+        $response = $this->vPos->purchase3D($purchaseRequest);
+
+
+        /*$input = "";
+
+         foreach ($response->getRedirectData() as $key => $value) {
+             $input .= '<input type="text" name="' . $key . '" value="' . $value . '">';
+         }
+
+
+         echo '<!DOCTYPE html>
+ <html>
+ <head>
+     <title></title>
+ </head>
+ <body>
+ <form action="'.$response->getRedirectUrl().'" method="'.$response->getRedirectMethod().'">
+     ' . $input . '
+     <input type="submit" name="" value="gönder">
+ </form>
+ </body>
+ </html>';
+         exit();*/
+
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertFalse($response->isSuccessful());
+        $this->assertTrue($response->isRedirect());
+        $this->assertInternalType('array', $response->getRedirectData());
     }
 }

@@ -4,6 +4,7 @@ namespace PaymentGateway\VPosPosnet;
 
 use Exception;
 use GuzzleHttp\Client;
+use PaymentGateway\VPosPosnet\Constant\OosRequestDataType;
 use PaymentGateway\VPosPosnet\Request\AuthorizeRequest;
 use PaymentGateway\VPosPosnet\Request\CaptureRequest;
 use PaymentGateway\VPosPosnet\Request\PurchaseRequest;
@@ -47,6 +48,20 @@ class VPos
     public function void(VoidRequest $voidRequest)
     {
         return $this->send($voidRequest, $this->setting->getVoidUrl());
+    }
+
+    public function purchase3D(PurchaseRequest $purchaseRequest)
+    {
+        $redirectForm = $purchaseRequest->get3DRedirectForm($this->setting, OosRequestDataType::SALE);
+
+        $response = new Response();
+
+        $response->setIsRedirect(true);
+        $response->setRedirectMethod($redirectForm->getMethod());
+        $response->setRedirectUrl($redirectForm->getAction());
+        $response->setRedirectData($redirectForm->getParameters());
+
+        return $response;
     }
 
     /**

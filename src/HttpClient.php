@@ -13,6 +13,7 @@ use Exception;
 use GuzzleHttp\Client;
 use PaymentGateway\VPosPosnet\Exception\CurlException;
 use PaymentGateway\VPosPosnet\Helper\Helper;
+use PaymentGateway\VPosPosnet\Request\OosRequest;
 use PaymentGateway\VPosPosnet\Request\RequestInterface;
 use PaymentGateway\VPosPosnet\Setting\Setting;
 
@@ -52,5 +53,24 @@ class HttpClient
         }
 
         return Helper::getResponseByXML($clientResponse->getBody()->getContents(), $documentString);
+    }
+
+    public function sendOos(OosRequest $oosRequest, $url)
+    {
+        $documentString = $oosRequest->toXmlString($this->setting);
+
+        $client = new Client();
+
+        try {
+            $clientResponse = $client->post($url, [
+                'form_params' => [
+                    'xmldata' => $documentString,
+                ]
+            ]);
+        } catch (Exception $exception) {
+            throw new CurlException('Connection Error', $exception->getMessage());
+        }
+
+        return Helper::getOosResponseByXML($clientResponse->getBody()->getContents(), $documentString);
     }
 }

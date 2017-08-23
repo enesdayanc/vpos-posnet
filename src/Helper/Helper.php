@@ -11,6 +11,7 @@ namespace PaymentGateway\VPosPosnet\Helper;
 
 use Exception;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
+use PaymentGateway\VPosPosnet\Response\OosResponse;
 use PaymentGateway\VPosPosnet\Response\Response;
 use ReflectionClass;
 use SimpleXMLElement;
@@ -24,9 +25,9 @@ class Helper
         return ArrayToXml::convert($array, 'posnetRequest', true, 'UTF-8');
     }
 
-    public static function orderIdParser($orderId)
+    public static function orderIdParser($orderId, $length = 24)
     {
-        return str_pad($orderId, 24, 0, STR_PAD_LEFT);
+        return str_pad($orderId, $length, 0, STR_PAD_LEFT);
     }
 
     public static function amountParser($amount)
@@ -110,5 +111,39 @@ class Helper
     {
         $oClass = new ReflectionClass ($class);
         return $oClass->getConstants();
+    }
+
+    public static function getOosResponseByXML($xml, $requestRawData)
+    {
+        try {
+            $data = new SimpleXMLElement($xml);
+        } catch (Exception $exception) {
+            throw new ValidationException('Invalid Oos Xml Response', 'INVALID_OOS_XML_RESPONSE');
+        }
+
+        $response = new OosResponse();
+
+        $response->setRawData($xml);
+        $response->setRequestRawData($requestRawData);
+
+        if (!empty($data->approved)
+            && $data->approved >= 1) {
+            $response->setValid(true);
+        }
+
+        if (!empty($data->oosRequestDataResponse->data1)) {
+            $response->setData1((string)$data->oosRequestDataResponse->data1);
+        }
+
+        if (!empty($data->oosRequestDataResponse->data2)) {
+            $response->setData2((string)$data->oosRequestDataResponse->data2);
+        }
+
+        if (!empty($data->oosRequestDataResponse->sign)) {
+            $response->setSign((string)$data->oosRequestDataResponse->sign);
+        }
+
+
+        return $response;
     }
 }

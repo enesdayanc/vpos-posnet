@@ -8,6 +8,7 @@
 
 namespace PaymentGateway\VPosPosnet\Helper;
 
+use PaymentGateway\VPosPosnet\Constant\OosRequestDataType;
 use PaymentGateway\VPosPosnet\Constant\ReverseTransaction;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 
@@ -89,6 +90,13 @@ class Validator
     {
         if (!in_array($value, Helper::getConstants(ReverseTransaction::class))) {
             throw new ValidationException('Invalid Reverse Transaction', 'INVALID_REVERSE_TRANSACTION');
+        }
+    }
+
+    public static function validateOosRequestDataType($value)
+    {
+        if (!in_array($value, Helper::getConstants(OosRequestDataType::class))) {
+            throw new ValidationException('Invalid Oos Request Data Type', 'INVALID_OOS_REQUEST_DATA_TYPE');
         }
     }
 }

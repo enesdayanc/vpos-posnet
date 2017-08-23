@@ -17,6 +17,8 @@ class Card
     private $expiryMonth;
     private $expiryYear;
     private $cvv;
+    private $firstName;
+    private $lastName;
 
     /**
      * @return mixed
@@ -85,6 +87,44 @@ class Card
     public function getExpires()
     {
         return $this->getExpiryYear() . $this->getExpiryMonth();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param mixed $firstName
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param mixed $lastName
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+
+    public function getFullName()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
     public function validate()

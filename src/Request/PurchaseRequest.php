@@ -8,10 +8,15 @@
 
 namespace PaymentGateway\VPosPosnet\Request;
 
+use PaymentGateway\VPosPosnet\Constant\Language;
+use PaymentGateway\VPosPosnet\Constant\RedirectFormMethod;
 use PaymentGateway\VPosPosnet\Constant\RequestCurrencyCode;
+use PaymentGateway\VPosPosnet\Exception\ValidationException;
 use PaymentGateway\VPosPosnet\Helper\Helper;
 use PaymentGateway\VPosPosnet\Helper\Validator;
+use PaymentGateway\VPosPosnet\HttpClient;
 use PaymentGateway\VPosPosnet\Model\Card;
+use PaymentGateway\VPosPosnet\Model\RedirectForm;
 use PaymentGateway\VPosPosnet\Setting\Setting;
 
 class PurchaseRequest implements RequestInterface
@@ -115,6 +120,7 @@ class PurchaseRequest implements RequestInterface
 
     public function toXmlString(Setting $setting)
     {
+        $setting->validate();
         $this->validate();
 
         $credential = $setting->getCredential();
@@ -161,5 +167,47 @@ class PurchaseRequest implements RequestInterface
         $elements['sale'] = $sale;
 
         return Helper::arrayToXmlString($elements);
+    }
+
+    public function get3DRedirectForm(Setting $setting, $oosRequestDataType)
+    {
+        $this->validate();
+
+        $credential = $setting->getCredential();
+
+        $oosResponse = $this->getOosResponse($setting, $oosRequestDataType);
+
+        $params = array(
+            "mid" => $credential->getMerchantId(),
+            "posnetID" => $credential->getPosnetId(),
+            "posnetData" => $oosResponse->getData1(),
+            "posnetData2" => $oosResponse->getData2(),
+            "digest" => $oosResponse->getSign(),
+            "merchantReturnURL" => $setting->getThreeDReturnUrl(),
+            "lang" => Language::TR,
+        );
+
+        $redirectForm = new RedirectForm();
+        $redirectForm->setAction($setting->getThreeDPostUrl());
+        $redirectForm->setMethod(RedirectFormMethod::POST);
+        $redirectForm->setParameters($params);
+
+        return $redirectForm;
+    }
+
+
+    private function getOosResponse(Setting $setting, $oosRequestDataType)
+    {
+        $oosRequest = new OosRequest();
+
+        $oosRequest->setInstallment($this->getInstallment());
+        $oosRequest->setAmount($this->getAmount());
+        $oosRequest->setOrderId($this->getOrderId());
+        $oosRequest->setCard($this->getCard());
+        $oosRequest->setOosRequestDataType($oosRequestDataType);
+
+        $httpClient = new HttpClient($setting);
+
+        return $httpClient->sendOos($oosRequest, $setting->getOosUrl());
     }
 }

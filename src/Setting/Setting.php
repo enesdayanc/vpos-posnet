@@ -15,6 +15,7 @@ abstract class Setting
 {
     /** @var  Credential $credential */
     private $credential;
+    private $threeDReturnUrl;
 
     /**
      * @return Credential
@@ -32,6 +33,22 @@ abstract class Setting
         $this->credential = $credential;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getThreeDReturnUrl()
+    {
+        return $this->threeDReturnUrl;
+    }
+
+    /**
+     * @param mixed $threeDReturnUrl
+     */
+    public function setThreeDReturnUrl($threeDReturnUrl)
+    {
+        $this->threeDReturnUrl = $threeDReturnUrl;
+    }
+
     public function validate()
     {
         Validator::validateNotEmpty('credential', $this->getCredential());
@@ -41,6 +58,7 @@ abstract class Setting
         Validator::validateNotEmpty('captureUrl', $this->getCaptureUrl());
         Validator::validateNotEmpty('voidUrl', $this->getVoidUrl());
         Validator::validateNotEmpty('refundUrl', $this->getRefundUrl());
+        Validator::validateNotEmpty('threeDReturnUrl', $this->getThreeDReturnUrl());
     }
 
     public abstract function getThreeDPostUrl();
@@ -54,4 +72,6 @@ abstract class Setting
     public abstract function getRefundUrl();
 
     public abstract function getVoidUrl();
+
+    public abstract function getOosUrl();
 }
