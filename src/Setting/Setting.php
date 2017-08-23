@@ -74,4 +74,6 @@ abstract class Setting
     public abstract function getVoidUrl();
 
     public abstract function getOosUrl();
+
+    public abstract function getAllowedThreeDMdStatus() : array;
 }

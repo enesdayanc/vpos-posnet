@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: enesdayanc
- * Date: 22/08/2017
- * Time: 11:44
+ * Date: 23/08/2017
+ * Time: 16:26
  */
 
 namespace PaymentGateway\VPosPosnet\Setting;
@@ -11,44 +11,43 @@ namespace PaymentGateway\VPosPosnet\Setting;
 
 use PaymentGateway\VPosPosnet\Constant\MdStatus;
 
-class YapiKrediTest extends Setting
+class YapiKredi extends Setting
 {
 
     public function getThreeDPostUrl()
     {
-        return 'http://setmpos.ykb.com/3DSWebService/YKBPaymentService';
+        return 'https://www.posnet.ykb.com/3DSWebService/YKBPaymentService';
     }
 
     public function getAuthorizeUrl()
     {
-        return 'http://setmpos.ykb.com/PosnetWebService/XML';
+        return 'https://www.posnet.ykb.com/PosnetWebService/XML';
     }
 
     public function getCaptureUrl()
     {
-        return 'http://setmpos.ykb.com/PosnetWebService/XML';
+        return 'https://www.posnet.ykb.com/PosnetWebService/XML';
     }
 
     public function getPurchaseUrl()
     {
-        return 'http://setmpos.ykb.com/PosnetWebService/XML';
+        return 'https://www.posnet.ykb.com/PosnetWebService/XML';
     }
 
     public function getRefundUrl()
     {
-        return 'http://setmpos.ykb.com/PosnetWebService/XML';
+        return 'https://www.posnet.ykb.com/PosnetWebService/XML';
     }
 
     public function getVoidUrl()
     {
-        return 'http://setmpos.ykb.com/PosnetWebService/XML';
+        return 'https://www.posnet.ykb.com/PosnetWebService/XML';
     }
 
     public function getOosUrl()
     {
-        return 'http://setmpos.ykb.com/PosnetWebService/XML';
+        return 'https://www.posnet.ykb.com/PosnetWebService/XML';
     }
-
 
     public function getAllowedThreeDMdStatus(): array
     {
@@ -57,7 +56,6 @@ class YapiKrediTest extends Setting
             MdStatus::TWO,
             MdStatus::THREE,
             MdStatus::FOUR,
-            MdStatus::NINE, //only for test env
         );
     }
 }

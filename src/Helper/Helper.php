@@ -59,7 +59,7 @@ class Helper
         }
 
         if (!empty($data->approved)
-            && $data->approved >= 1) {
+            && $data->approved == 1) {
             $response->setIsSuccessful(true);
         }
 
@@ -128,7 +128,7 @@ class Helper
         $response->setRequestRawData($requestRawData);
 
         if (!empty($data->approved)
-            && $data->approved >= 1) {
+            && $data->approved == 1) {
             $response->setValid(true);
         }
 
@@ -164,7 +164,7 @@ class Helper
 
 
         if (!empty($data->approved)
-            && $data->approved >= 1) {
+            && $data->approved == 1) {
             $response->setValid(true);
         }
 

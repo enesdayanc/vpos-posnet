@@ -21,13 +21,6 @@ use PaymentGateway\VPosPosnet\Setting\Setting;
 
 class ThreeDResponse
 {
-    private $allowedMdStatus = array(
-        MdStatus::ONE,
-        MdStatus::TWO,
-        MdStatus::THREE,
-        MdStatus::FOUR,
-    );
-
     private $merchantPacket;
     private $bankPacket;
     private $sign;
@@ -176,19 +169,13 @@ class ThreeDResponse
 
         $oosResolveMerchantResponse = $this->getOosResolveMerchantResponse($setting);
 
-        print_r($oosResolveMerchantResponse);
-        exit();
-
         $validSignature = $this->isValidSignature($setting, $oosResolveMerchantResponse);
 
         $responseClass = new Response();
 
-        //$responseClass->setCode($this->getAuthCode());
-        //$responseClass->setTransactionReference($this->getTransId());
-
         if ($validSignature) {
 
-            if (in_array($oosResolveMerchantResponse->getMdStatus(), $this->allowedMdStatus)) {
+            if (in_array($oosResolveMerchantResponse->getMdStatus(), $setting->getAllowedThreeDMdStatus())) {
                 $httpClient = new HttpClient($setting);
 
                 $oosTranRequest = new OosTranRequest();
