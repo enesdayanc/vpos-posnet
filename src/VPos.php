@@ -5,6 +5,7 @@ namespace PaymentGateway\VPosPosnet;
 use Exception;
 use GuzzleHttp\Client;
 use PaymentGateway\VPosPosnet\Constant\OosRequestDataType;
+use PaymentGateway\VPosPosnet\Model\ThreeDResponse;
 use PaymentGateway\VPosPosnet\Request\AuthorizeRequest;
 use PaymentGateway\VPosPosnet\Request\CaptureRequest;
 use PaymentGateway\VPosPosnet\Request\PurchaseRequest;
@@ -74,5 +75,10 @@ class VPos
         $httpClient = new HttpClient($this->setting);
 
         return $httpClient->send($requestElements, $url);
+    }
+
+    public function handle3DResponse(ThreeDResponse $threeDResponse)
+    {
+        return $threeDResponse->getResponseClass($this->setting);
     }
 }

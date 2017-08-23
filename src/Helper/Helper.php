@@ -11,6 +11,7 @@ namespace PaymentGateway\VPosPosnet\Helper;
 
 use Exception;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
+use PaymentGateway\VPosPosnet\Response\OosResolveMerchantResponse;
 use PaymentGateway\VPosPosnet\Response\OosResponse;
 use PaymentGateway\VPosPosnet\Response\Response;
 use ReflectionClass;
@@ -143,6 +144,60 @@ class Helper
             $response->setSign((string)$data->oosRequestDataResponse->sign);
         }
 
+
+        return $response;
+    }
+
+
+    public static function getOosResolveMerchantResponseByXML($xml, $requestRawData)
+    {
+        try {
+            $data = new SimpleXMLElement($xml);
+        } catch (Exception $exception) {
+            throw new ValidationException('Invalid Oos Xml Response', 'INVALID_OOS_XML_RESPONSE');
+        }
+
+        $response = new OosResolveMerchantResponse();
+
+        $response->setRawData($xml);
+        $response->setRequestRawData($requestRawData);
+
+
+        if (!empty($data->approved)
+            && $data->approved >= 1) {
+            $response->setValid(true);
+        }
+
+        if (!empty($data->oosResolveMerchantDataResponse->amount)) {
+            $response->setPosnetAmount($data->oosResolveMerchantDataResponse->amount);
+        }
+
+
+        if (!empty($data->oosResolveMerchantDataResponse->currency)) {
+            $response->setCurrency($data->oosResolveMerchantDataResponse->currency);
+        }
+
+        if (!empty($data->oosResolveMerchantDataResponse->installment)) {
+            $response->setInstallment($data->oosResolveMerchantDataResponse->installment);
+        }
+
+
+        if (!empty($data->oosResolveMerchantDataResponse->xid)) {
+            $response->setOrderId($data->oosResolveMerchantDataResponse->xid);
+        }
+
+
+        if (!empty($data->oosResolveMerchantDataResponse->txStatus)) {
+            $response->setStatus($data->oosResolveMerchantDataResponse->txStatus);
+        }
+
+        if (!empty($data->oosResolveMerchantDataResponse->mdStatus)) {
+            $response->setMdStatus($data->oosResolveMerchantDataResponse->mdStatus);
+        }
+
+        if (!empty($data->oosResolveMerchantDataResponse->mdErrorMessage)) {
+            $response->setErrorMessage($data->oosResolveMerchantDataResponse->mdErrorMessage);
+        }
 
         return $response;
     }
