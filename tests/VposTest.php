@@ -47,7 +47,7 @@ class VposTest extends TestCase
         $this->vPos = new VPos($settings);
 
         $card = new Card();
-        $card->setCreditCardNumber("4048097006508842");
+        $card->setCreditCardNumber("5400617030332817");
         $card->setExpiryMonth('02');
         $card->setExpiryYear('20');
         $card->setCvv('000');
@@ -91,11 +91,7 @@ class VposTest extends TestCase
         $purchaseRequest->setCard($this->card);
         $purchaseRequest->setOrderId($this->orderId);
         $purchaseRequest->setAmount($this->amount);
-        $purchaseRequest->setCurrency($this->currency);
-        $purchaseRequest->setUserId($this->userId);
         $purchaseRequest->setInstallment($this->installment);
-        $purchaseRequest->setIp('198.168.1.1');
-        $purchaseRequest->setEmail('enes.dayanc@modanisa.com.tr');
 
         $response = $this->vPos->purchase($purchaseRequest);
 
@@ -165,6 +161,7 @@ class VposTest extends TestCase
             'amount' => $this->amount,
             'userId' => $this->userId,
             'transactionReference' => $response->getTransactionReference(),
+            'installment' => $this->installment,
         );
     }
 
@@ -192,12 +189,11 @@ class VposTest extends TestCase
      */
     public function testCapture($params)
     {
-        sleep(2);
         $captureRequest = new CaptureRequest();
 
         $captureRequest->setTransactionReference($params['transactionReference']);
         $captureRequest->setAmount($params['amount']);
-        $captureRequest->setInstallment(1);
+        $captureRequest->setInstallment($params['installment']);
 
         $response = $this->vPos->capture($captureRequest);
 
@@ -222,24 +218,25 @@ class VposTest extends TestCase
         $this->assertSame('0123', $response->getErrorCode());
     }
 
-    /**
-     * @depends testPurchase
-     * @param $params
-     */
-    public function testRefund($params)
-    {
-        $refundRequest = new RefundRequest();
-        $refundRequest->setAmount($params['amount'] / 2);
-        $refundRequest->setTransactionReference($params['transactionReference']);
-
-        $response = $this->vPos->refund($refundRequest);
-
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertTrue($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-
-        return $params;
-    }
+//    Dont refund before 24 hours
+//    /**
+//     * @depends testPurchase
+//     * @param $params
+//     */
+//    public function testRefund($params)
+//    {
+//        $refundRequest = new RefundRequest();
+//        $refundRequest->setAmount($params['amount'] / 2);
+//        $refundRequest->setTransactionReference($params['transactionReference']);
+//
+//        $response = $this->vPos->refund($refundRequest);
+//
+//        $this->assertInstanceOf(Response::class, $response);
+//        $this->assertTrue($response->isSuccessful());
+//        $this->assertFalse($response->isRedirect());
+//
+//        return $params;
+//    }
 
     /**
      * @depends testPurchaseForVoid
