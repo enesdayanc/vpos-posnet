@@ -51,6 +51,20 @@ class VPos
         return $this->send($voidRequest, $this->setting->getVoidUrl());
     }
 
+    public function authorize3D(PurchaseRequest $purchaseRequest)
+    {
+        $redirectForm = $purchaseRequest->get3DRedirectForm($this->setting, OosRequestDataType::AUTH);
+
+        $response = new Response();
+
+        $response->setIsRedirect(true);
+        $response->setRedirectMethod($redirectForm->getMethod());
+        $response->setRedirectUrl($redirectForm->getAction());
+        $response->setRedirectData($redirectForm->getParameters());
+
+        return $response;
+    }
+
     public function purchase3D(PurchaseRequest $purchaseRequest)
     {
         $redirectForm = $purchaseRequest->get3DRedirectForm($this->setting, OosRequestDataType::SALE);
