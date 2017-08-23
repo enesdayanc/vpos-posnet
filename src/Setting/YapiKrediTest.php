@@ -14,7 +14,7 @@ class YapiKrediTest extends Setting
 
     public function getThreeDPostUrl()
     {
-        return 'http://setmpos.ykb.com/PosnetWebService/XML';
+        return 'http://setmpos.ykb.com/3DSWebService/YKBPaymentService';
     }
 
     public function getAuthorizeUrl()
