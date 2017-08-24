@@ -60,7 +60,7 @@ class Helper
 
         if (!empty($data->approved)
             && $data->approved == 1) {
-            $response->setIsSuccessful(true);
+            $response->setSuccessful(true);
         }
 
         if (!empty($data->authCode)) {

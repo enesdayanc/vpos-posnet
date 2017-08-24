@@ -10,7 +10,7 @@ namespace PaymentGateway\VPosPosnet\Response;
 
 class Response
 {
-    private $isSuccessful = false;
+    private $successful = false;
     private $code;
     private $errorCode;
     private $errorMessage;
@@ -25,17 +25,17 @@ class Response
     /**
      * @return bool
      */
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
-        return $this->isSuccessful;
+        return $this->successful;
     }
 
     /**
-     * @param bool $isSuccessful
+     * @param bool $successful
      */
-    public function setIsSuccessful($isSuccessful)
+    public function setSuccessful(bool $successful)
     {
-        $this->isSuccessful = $isSuccessful;
+        $this->successful = $successful;
     }
 
     /**
