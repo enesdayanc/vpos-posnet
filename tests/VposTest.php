@@ -296,24 +296,4 @@ class VposTest extends TestCase
         $this->assertFalse($response->isRedirect());
         $this->assertSame('Invalid Signature', $response->getErrorMessage());
     }
-
-    public function test3DResponseHandleDoubleCapture()
-    {
-        $threeDResponse = new ThreeDResponse();
-        $threeDResponse->setMerchantPacket('F9B546CE07C0F26184100F382F79F6CA40A593713652AD24B63B4C6F9766420775C7F79E12CEAE450F7EA1BE49A78CFC202ED5B782C790E18E641BA70943CC802803DB3944A06380C708F881F557020D89B179CF771EC1B3632C59BEF6ACAE61D0147659312A9E971382A4C982444DA408506A6EB1794F595BB70730598F92E25ADB0809DB6FF33608FA8B8AB8DF498BBA2373E61EEE880487D433A874628A6F5834D2727BA005B05B8D0F70EC80E9B420FA2228F6FD089796F43EB7C0A9810A4ECFD6D03D3210FA53385BC4');
-        $threeDResponse->setBankPacket('D5B1135EC2A3865E5193FDFEE18C75C015AEF9068B1620F0A3DAD12C4EFE9B35C41F03C50863AF6CC30B3F044BCC42E3F4437D1D99DB2799081097C18FF4A4662E4E7B66833B111781333F7BCDF58BCB57FAC64F326A1A18F080F9A4B2E7BAABB5AE9AA53BA10D7ACBDD4F6209988D589E7A5D2052DD076A996E80AA0C08DDF1D2DC16D6440563D17B4B03FD');
-        $threeDResponse->setSign('4DE8852C5AFC14D1546CE889C06F0A13');
-        $threeDResponse->setCCPrefix('540061');
-        $threeDResponse->setTranType('Sale');
-        $threeDResponse->setPosnetAmount('1800');
-        $threeDResponse->setXid('00000000MOb21432af7b');
-        $threeDResponse->setMerchantId('6706598320');
-
-        $response = $this->vPos->handle3DResponse($threeDResponse);
-
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertFalse($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertSame('0127', $response->getErrorCode());
-    }
 }
