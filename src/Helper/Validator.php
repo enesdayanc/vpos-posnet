@@ -8,6 +8,7 @@
 
 namespace PaymentGateway\VPosPosnet\Helper;
 
+use PaymentGateway\VPosPosnet\Constant\BankType;
 use PaymentGateway\VPosPosnet\Constant\OosRequestDataType;
 use PaymentGateway\VPosPosnet\Constant\ReverseTransaction;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
@@ -97,6 +98,13 @@ class Validator
     {
         if (!in_array($value, Helper::getConstants(OosRequestDataType::class))) {
             throw new ValidationException('Invalid Oos Request Data Type', 'INVALID_OOS_REQUEST_DATA_TYPE');
+        }
+    }
+
+    public static function validateBankType($value)
+    {
+        if (!in_array($value, Helper::getConstants(BankType::class))) {
+            throw new ValidationException('Invalid Bank Type', 'INVALID_BANK_TYPE');
         }
     }
 }

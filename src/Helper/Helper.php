@@ -10,10 +10,15 @@ namespace PaymentGateway\VPosPosnet\Helper;
 
 
 use Exception;
+use PaymentGateway\VPosPosnet\Constant\BankType;
+use PaymentGateway\VPosPosnet\Exception\NotFoundException;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 use PaymentGateway\VPosPosnet\Response\OosResolveMerchantResponse;
 use PaymentGateway\VPosPosnet\Response\OosResponse;
 use PaymentGateway\VPosPosnet\Response\Response;
+use PaymentGateway\VPosPosnet\Setting\Setting;
+use PaymentGateway\VPosPosnet\Setting\YapiKredi;
+use PaymentGateway\VPosPosnet\Setting\YapiKrediTest;
 use ReflectionClass;
 use SimpleXMLElement;
 use Spatie\ArrayToXml\ArrayToXml;
@@ -200,5 +205,32 @@ class Helper
         }
 
         return $response;
+    }
+
+    /**
+     * @param $bankType
+     * @return Setting
+     * @throws NotFoundException
+     */
+    public static function getSettingClassByBankType($bankType)
+    {
+        Validator::validateBankType($bankType);
+
+        switch ($bankType) {
+            case BankType::YAPI_KREDI:
+                $setting = new YapiKredi();
+                break;
+            case BankType::YAPI_KREDI_TEST:
+                $setting = new YapiKrediTest();
+                break;
+        }
+
+        if (!isset($setting) || !$setting instanceof Setting) {
+            $userMessage = $bankType . ' not found';
+            $internalMessage = 'BANK_TYPE_NOT_FOUND';
+            throw new NotFoundException($userMessage, $internalMessage);
+        }
+
+        return $setting;
     }
 }
