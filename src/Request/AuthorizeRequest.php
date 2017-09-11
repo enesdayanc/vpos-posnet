@@ -15,7 +15,7 @@ use PaymentGateway\VPosPosnet\Setting\Setting;
 
 class AuthorizeRequest extends PurchaseRequest
 {
-    public function toXmlString(Setting $setting)
+    public function toXmlString(Setting $setting, bool $maskCardData = false)
     {
         $this->validate();
 
@@ -35,9 +35,9 @@ class AuthorizeRequest extends PurchaseRequest
          * Create auth
          */
         $auth = array(
-            "ccno" => $card->getCreditCardNumber(),
-            "cvc" => $card->getCvv(),
-            "expDate" => $card->getExpires(),
+            "ccno" => $card->getCreditCardNumber($maskCardData),
+            "cvc" => $card->getCvv($maskCardData),
+            "expDate" => $card->getExpires($maskCardData),
             "amount" => Helper::amountParser($this->getAmount()),
             "currencyCode" => RequestCurrencyCode::YT,
             "orderID" => Helper::orderIdParser($this->getOrderId()),

@@ -9,6 +9,7 @@
 namespace PaymentGateway\VPosPosnet\Model;
 
 
+use PaymentGateway\VPosPosnet\Helper\Helper;
 use PaymentGateway\VPosPosnet\Helper\Validator;
 
 class Card
@@ -21,10 +22,15 @@ class Card
     private $lastName;
 
     /**
+     * @param bool $maskCardData
      * @return mixed
      */
-    public function getCreditCardNumber()
+    public function getCreditCardNumber(bool $maskCardData = false)
     {
+        if ($maskCardData) {
+            return Helper::maskValue($this->creditCardNumber, 0, 6);
+        }
+
         return $this->creditCardNumber;
     }
 
@@ -37,10 +43,15 @@ class Card
     }
 
     /**
+     * @param bool $maskCardData
      * @return mixed
      */
-    public function getExpiryMonth()
+    public function getExpiryMonth(bool $maskCardData = false)
     {
+        if ($maskCardData) {
+            return Helper::maskValue($this->expiryMonth);
+        }
+
         return $this->expiryMonth;
     }
 
@@ -53,10 +64,15 @@ class Card
     }
 
     /**
+     * @param bool $maskCardData
      * @return mixed
      */
-    public function getExpiryYear()
+    public function getExpiryYear(bool $maskCardData = false)
     {
+        if ($maskCardData) {
+            return Helper::maskValue($this->expiryYear);
+        }
+
         return $this->expiryYear;
     }
 
@@ -69,10 +85,15 @@ class Card
     }
 
     /**
+     * @param bool $maskCardData
      * @return mixed
      */
-    public function getCvv()
+    public function getCvv(bool $maskCardData = false)
     {
+        if ($maskCardData) {
+            return Helper::maskValue($this->cvv);
+        }
+
         return $this->cvv;
     }
 
@@ -84,9 +105,9 @@ class Card
         $this->cvv = $cvv;
     }
 
-    public function getExpires()
+    public function getExpires(bool $maskCardData = false)
     {
-        return $this->getExpiryYear() . $this->getExpiryMonth();
+        return $this->getExpiryYear($maskCardData) . $this->getExpiryMonth($maskCardData);
     }
 
     /**

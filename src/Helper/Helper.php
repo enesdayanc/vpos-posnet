@@ -207,6 +207,11 @@ class Helper
         return $response;
     }
 
+    public static function maskValue($value, $takeStart = 0, $takeStop = 0, $maskingCharacter = '*')
+    {
+        return substr($value, $takeStart, $takeStop) . str_repeat($maskingCharacter, strlen($value) - ($takeStop - $takeStart));
+    }
+
     /**
      * @param $bankType
      * @return Setting
