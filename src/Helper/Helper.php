@@ -13,6 +13,7 @@ use Exception;
 use PaymentGateway\VPosPosnet\Constant\BankType;
 use PaymentGateway\VPosPosnet\Exception\NotFoundException;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
+use PaymentGateway\VPosPosnet\Model\ThreeDResponse;
 use PaymentGateway\VPosPosnet\Response\OosResolveMerchantResponse;
 use PaymentGateway\VPosPosnet\Response\OosResponse;
 use PaymentGateway\VPosPosnet\Response\Response;
@@ -237,5 +238,29 @@ class Helper
         }
 
         return $setting;
+    }
+
+    public static function getValueFromArray(array $array, $key, $default = null)
+    {
+        if (array_key_exists($key, $array)) {
+            return $array[$key];
+        }
+
+        return $default;
+    }
+
+    public static function getThreeDResponseFromRequest(array $request)
+    {
+        $threeDResponse = new ThreeDResponse();
+        $threeDResponse->setMerchantPacket(self::getValueFromArray($request, 'MerchantPacket'));
+        $threeDResponse->setBankPacket(self::getValueFromArray($request, 'BankPacket'));
+        $threeDResponse->setSign(self::getValueFromArray($request, 'Sign'));
+        $threeDResponse->setCCPrefix(self::getValueFromArray($request, 'CCPrefix'));
+        $threeDResponse->setTranType(self::getValueFromArray($request, 'TranType'));
+        $threeDResponse->setPosnetAmount(self::getValueFromArray($request, 'Amount'));
+        $threeDResponse->setXid(self::getValueFromArray($request, 'Xid'));
+        $threeDResponse->setMerchantId(self::getValueFromArray($request, 'MerchantId'));
+
+        return $threeDResponse;
     }
 }
