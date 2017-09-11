@@ -22,6 +22,7 @@ use PaymentGateway\VPosPosnet\Setting\Setting;
 class HttpClient
 {
     private $setting;
+    private $timeout = 20;
 
     /**
      * HttpClient constructor.
@@ -46,6 +47,7 @@ class HttpClient
 
         try {
             $clientResponse = $client->post($url, [
+                'timeout' => $this->timeout,
                 'form_params' => [
                     'xmldata' => $documentString,
                 ]
@@ -65,6 +67,7 @@ class HttpClient
 
         try {
             $clientResponse = $client->post($url, [
+                'timeout' => $this->timeout,
                 'form_params' => [
                     'xmldata' => $documentString,
                 ]
@@ -90,6 +93,7 @@ class HttpClient
 
         try {
             $clientResponse = $client->post($url, [
+                'timeout' => $this->timeout,
                 'form_params' => [
                     'xmldata' => $documentString,
                 ]
@@ -116,6 +120,7 @@ class HttpClient
 
         try {
             $clientResponse = $client->post($url, [
+                'timeout' => $this->timeout,
                 'form_params' => [
                     'xmldata' => $documentString,
                 ]
