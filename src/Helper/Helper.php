@@ -249,6 +249,10 @@ class Helper
         return $default;
     }
 
+    /**
+     * @param array $request
+     * @return ThreeDResponse
+     */
     public static function getThreeDResponseFromRequest(array $request)
     {
         $threeDResponse = new ThreeDResponse();
