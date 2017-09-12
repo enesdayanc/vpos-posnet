@@ -9,7 +9,7 @@
 namespace PaymentGateway\VPosPosnet\Request;
 
 
-use PaymentGateway\VPosPosnet\Constant\RequestCurrencyCode;
+use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosPosnet\Helper\Helper;
 use PaymentGateway\VPosPosnet\Helper\Validator;
 use PaymentGateway\VPosPosnet\Setting\Setting;
@@ -18,6 +18,8 @@ class RefundRequest implements RequestInterface
 {
     private $amount;
     private $transactionReference;
+    /** @var  Currency */
+    private $currency;
 
     /**
      * @return mixed
@@ -51,10 +53,27 @@ class RefundRequest implements RequestInterface
         $this->transactionReference = $transactionReference;
     }
 
+    /**
+     * @return Currency
+     */
+    public function getCurrency(): Currency
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param Currency $currency
+     */
+    public function setCurrency(Currency $currency)
+    {
+        $this->currency = $currency;
+    }
+
     public function validate()
     {
         Validator::validateAmount($this->getAmount());
         Validator::validateNotEmpty('transactionReference', $this->getTransactionReference());
+        Validator::validateCurrency($this->getCurrency());
     }
 
     public function toXmlString(Setting $setting)
@@ -72,7 +91,7 @@ class RefundRequest implements RequestInterface
             "return" => array(
                 "amount" => Helper::amountParser($this->getAmount()),
                 "hostLogKey" => $this->getTransactionReference(),
-                "currencyCode" => RequestCurrencyCode::YT,
+                "currencyCode" => Helper::getRequestCurrencyCodeFromISO4217($this->getCurrency()),
             ),
         );
 

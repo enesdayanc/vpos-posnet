@@ -8,7 +8,7 @@
 
 namespace PaymentGateway\VPosPosnet\Request;
 
-use PaymentGateway\VPosPosnet\Constant\RequestCurrencyCode;
+use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosPosnet\Helper\Helper;
 use PaymentGateway\VPosPosnet\Helper\Validator;
 use PaymentGateway\VPosPosnet\Setting\Setting;
@@ -18,6 +18,8 @@ class CaptureRequest implements RequestInterface
     private $amount;
     private $transactionReference;
     private $installment;
+    /** @var  Currency */
+    private $currency;
 
     /**
      * @return mixed
@@ -67,11 +69,28 @@ class CaptureRequest implements RequestInterface
         $this->installment = $installment;
     }
 
+    /**
+     * @return Currency
+     */
+    public function getCurrency(): Currency
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param Currency $currency
+     */
+    public function setCurrency(Currency $currency)
+    {
+        $this->currency = $currency;
+    }
+
     public function validate()
     {
         Validator::validateAmount($this->getAmount());
         Validator::validateNotEmpty('transactionReference', $this->getTransactionReference());
         Validator::validateInstallment($this->getInstallment());
+        Validator::validateCurrency($this->getCurrency());
     }
 
     public function toXmlString(Setting $setting)
@@ -93,7 +112,7 @@ class CaptureRequest implements RequestInterface
          */
         $capt = array(
             "amount" => Helper::amountParser($this->getAmount()),
-            "currencyCode" => RequestCurrencyCode::YT,
+            "currencyCode" => Helper::getRequestCurrencyCodeFromISO4217($this->getCurrency()),
             "hostLogKey" => $this->getTransactionReference(),
         );
 

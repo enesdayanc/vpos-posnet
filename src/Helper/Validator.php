@@ -9,12 +9,26 @@
 namespace PaymentGateway\VPosPosnet\Helper;
 
 use PaymentGateway\VPosPosnet\Constant\BankType;
+use PaymentGateway\VPosPosnet\Constant\Currency;
 use PaymentGateway\VPosPosnet\Constant\OosRequestDataType;
 use PaymentGateway\VPosPosnet\Constant\ReverseTransaction;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 
 class Validator
 {
+    public static function validateCurrency($value)
+    {
+        if (!$value instanceof \PaymentGateway\ISO4217\Model\Currency) {
+            throw new ValidationException('Invalid Currency Type', 'INVALID_CURRENCY_TYPE');
+        }
+
+        $alpha3 = $value->getAlpha3();
+
+        if (!in_array($alpha3, Helper::getConstants(Currency::class))) {
+            throw new ValidationException('Invalid Currency', 'INVALID_CURRENCY');
+        }
+    }
+
     public static function validateNotEmpty($name, $value)
     {
         if (empty($value)) {

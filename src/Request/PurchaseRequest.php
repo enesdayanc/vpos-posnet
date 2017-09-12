@@ -8,10 +8,9 @@
 
 namespace PaymentGateway\VPosPosnet\Request;
 
+use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosPosnet\Constant\Language;
 use PaymentGateway\VPosPosnet\Constant\RedirectFormMethod;
-use PaymentGateway\VPosPosnet\Constant\RequestCurrencyCode;
-use PaymentGateway\VPosPosnet\Exception\ValidationException;
 use PaymentGateway\VPosPosnet\Helper\Helper;
 use PaymentGateway\VPosPosnet\Helper\Validator;
 use PaymentGateway\VPosPosnet\HttpClient;
@@ -28,6 +27,8 @@ class PurchaseRequest implements RequestInterface
     private $installment;
     /** @var  bool */
     private $useKoi = false;
+    /** @var  Currency */
+    private $currency;
 
     /**
      * @return Card
@@ -109,6 +110,22 @@ class PurchaseRequest implements RequestInterface
         $this->useKoi = $useKoi;
     }
 
+    /**
+     * @return Currency
+     */
+    public function getCurrency(): Currency
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param Currency $currency
+     */
+    public function setCurrency(Currency $currency)
+    {
+        $this->currency = $currency;
+    }
+
     public function validate()
     {
         Validator::validateNotEmpty('card', $this->getCard());
@@ -116,6 +133,7 @@ class PurchaseRequest implements RequestInterface
         Validator::validateAmount($this->getAmount());
         Validator::validateInstallment($this->getInstallment());
         Validator::validateOrderId($this->getOrderId());
+        Validator::validateCurrency($this->getCurrency());
     }
 
     public function toXmlString(Setting $setting, bool $maskCardData = false)
@@ -143,7 +161,7 @@ class PurchaseRequest implements RequestInterface
             "cvc" => $card->getCvv($maskCardData),
             "expDate" => $card->getExpires($maskCardData),
             "amount" => Helper::amountParser($this->getAmount()),
-            "currencyCode" => RequestCurrencyCode::YT,
+            "currencyCode" => Helper::getRequestCurrencyCodeFromISO4217($this->getCurrency()),
             "orderID" => Helper::orderIdParser($this->getOrderId()),
         );
 
@@ -205,6 +223,7 @@ class PurchaseRequest implements RequestInterface
         $oosRequest->setOrderId($this->getOrderId());
         $oosRequest->setCard($this->getCard());
         $oosRequest->setOosRequestDataType($oosRequestDataType);
+        $oosRequest->setCurrency($this->getCurrency());
 
         $httpClient = new HttpClient($setting);
 

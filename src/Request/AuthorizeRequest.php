@@ -39,7 +39,7 @@ class AuthorizeRequest extends PurchaseRequest
             "cvc" => $card->getCvv($maskCardData),
             "expDate" => $card->getExpires($maskCardData),
             "amount" => Helper::amountParser($this->getAmount()),
-            "currencyCode" => RequestCurrencyCode::YT,
+            "currencyCode" => Helper::getRequestCurrencyCodeFromISO4217($this->getCurrency()),
             "orderID" => Helper::orderIdParser($this->getOrderId()),
         );
 

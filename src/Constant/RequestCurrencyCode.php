@@ -12,4 +12,7 @@ namespace PaymentGateway\VPosPosnet\Constant;
 class RequestCurrencyCode
 {
     const YT = 'YT';
+    const US = 'US';
+    const EU = 'EU';
+    const GB = 'GB';
 }

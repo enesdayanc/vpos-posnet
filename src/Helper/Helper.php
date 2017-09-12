@@ -10,7 +10,9 @@ namespace PaymentGateway\VPosPosnet\Helper;
 
 
 use Exception;
+use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosPosnet\Constant\BankType;
+use PaymentGateway\VPosPosnet\Constant\RequestCurrencyCode;
 use PaymentGateway\VPosPosnet\Exception\NotFoundException;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 use PaymentGateway\VPosPosnet\Model\ThreeDResponse;
@@ -266,5 +268,33 @@ class Helper
         $threeDResponse->setMerchantId(self::getValueFromArray($request, 'MerchantId'));
 
         return $threeDResponse;
+    }
+
+    public static function getRequestCurrencyCodeFromISO4217(Currency $currency)
+    {
+        Validator::validateCurrency($currency);
+
+        switch ($currency->getAlpha3()) {
+            case \PaymentGateway\VPosPosnet\Constant\Currency::TL:
+                $requestCurrencyCode = RequestCurrencyCode::YT;
+                break;
+            case \PaymentGateway\VPosPosnet\Constant\Currency::EUR:
+                $requestCurrencyCode = RequestCurrencyCode::EU;
+                break;
+            case \PaymentGateway\VPosPosnet\Constant\Currency::USD:
+                $requestCurrencyCode = RequestCurrencyCode::US;
+                break;
+            case \PaymentGateway\VPosPosnet\Constant\Currency::GBP:
+                $requestCurrencyCode = RequestCurrencyCode::GB;
+                break;
+        }
+
+        if (empty($requestCurrencyCode)) {
+            $userMessage = $currency->getAlpha3() . ' not found';
+            $internalMessage = 'CURRENCY_NOT_FOUND';
+            throw new NotFoundException($userMessage, $internalMessage);
+        }
+
+        return $requestCurrencyCode;
     }
 }

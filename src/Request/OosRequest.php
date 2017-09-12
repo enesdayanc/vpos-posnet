@@ -9,7 +9,7 @@
 namespace PaymentGateway\VPosPosnet\Request;
 
 
-use PaymentGateway\VPosPosnet\Constant\RequestCurrencyCode;
+use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosPosnet\Helper\Helper;
 use PaymentGateway\VPosPosnet\Helper\Validator;
 use PaymentGateway\VPosPosnet\Model\Card;
@@ -24,6 +24,8 @@ class OosRequest implements RequestInterface
     private $orderId;
     private $installment;
     private $oosRequestDataType;
+    /** @var  Currency */
+    private $currency;
 
     /**
      * @return Card
@@ -105,6 +107,21 @@ class OosRequest implements RequestInterface
         $this->oosRequestDataType = $oosRequestDataType;
     }
 
+    /**
+     * @return Currency
+     */
+    public function getCurrency(): Currency
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param Currency $currency
+     */
+    public function setCurrency(Currency $currency)
+    {
+        $this->currency = $currency;
+    }
 
     public function validate()
     {
@@ -114,6 +131,7 @@ class OosRequest implements RequestInterface
         Validator::validateInstallment($this->getInstallment());
         Validator::validateOrderId($this->getOrderId());
         Validator::validateOosRequestDataType($this->getOosRequestDataType());
+        Validator::validateCurrency($this->getCurrency());
     }
 
     public function toXmlString(Setting $setting)
@@ -138,7 +156,7 @@ class OosRequest implements RequestInterface
             "expDate" => $card->getExpires(),
             "cvc" => $card->getCvv(),
             "amount" => Helper::amountParser($this->getAmount()),
-            "currencyCode" => RequestCurrencyCode::YT,
+            "currencyCode" => Helper::getRequestCurrencyCodeFromISO4217($this->getCurrency()),
             "XID" => Helper::orderIdParser($this->getOrderId(), 20),
             "cardHolderName" => $card->getFullName(),
             "tranType" => $this->getOosRequestDataType(),

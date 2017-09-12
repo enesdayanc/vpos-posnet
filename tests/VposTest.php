@@ -8,6 +8,8 @@
 
 namespace PaymentGateway\VPosPosnet;
 
+use PaymentGateway\ISO4217\ISO4217;
+use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosPosnet\Constant\ReverseTransaction;
 use PaymentGateway\VPosPosnet\Exception\ValidationException;
 use PaymentGateway\VPosPosnet\Model\Card;
@@ -28,6 +30,9 @@ class VposTest extends TestCase
     protected $vPos;
     /** @var  Card $card */
     protected $card;
+
+    /** @var  Currency $currency */
+    protected $currency;
 
     protected $orderId;
     protected $authorizeOrderId;
@@ -50,12 +55,16 @@ class VposTest extends TestCase
         $this->vPos = new VPos($settings);
 
         $card = new Card();
-        $card->setCreditCardNumber("5400617030332817");
+        $card->setCreditCardNumber("4506347022052795");
         $card->setExpiryMonth('02');
         $card->setExpiryYear('20');
         $card->setCvv('000');
 
         $this->card = $card;
+
+        $iso4217 = new ISO4217();
+
+        $this->currency = $iso4217->getByCode('EUR');
 
         $this->amount = rand(1, 100);
         $this->orderId = 'MO' . substr(md5(microtime() . rand()), 0, 10);
@@ -72,6 +81,7 @@ class VposTest extends TestCase
         $purchaseRequest->setOrderId($this->orderId);
         $purchaseRequest->setAmount($this->amount);
         $purchaseRequest->setInstallment($this->installment);
+        $purchaseRequest->setCurrency($this->currency);
 
         $response = $this->vPos->purchase($purchaseRequest);
 
@@ -95,6 +105,7 @@ class VposTest extends TestCase
         $purchaseRequest->setOrderId($this->orderId);
         $purchaseRequest->setAmount($this->amount);
         $purchaseRequest->setInstallment($this->installment);
+        $purchaseRequest->setCurrency($this->currency);
 
         $response = $this->vPos->purchase($purchaseRequest);
 
@@ -123,6 +134,7 @@ class VposTest extends TestCase
         $purchaseRequest->setOrderId($this->orderId);
         $purchaseRequest->setAmount(0);
         $purchaseRequest->setInstallment($this->installment);
+        $purchaseRequest->setCurrency($this->currency);
 
         $this->vPos->purchase($purchaseRequest);
     }
@@ -135,6 +147,7 @@ class VposTest extends TestCase
         $purchaseRequest->setOrderId($this->orderId);
         $purchaseRequest->setAmount($this->amount);
         $purchaseRequest->setInstallment(50);
+        $purchaseRequest->setCurrency($this->currency);
 
         $response = $this->vPos->purchase($purchaseRequest);
 
@@ -152,6 +165,7 @@ class VposTest extends TestCase
         $authorizeRequest->setOrderId($this->orderId);
         $authorizeRequest->setAmount($this->amount);
         $authorizeRequest->setInstallment($this->installment);
+        $authorizeRequest->setCurrency($this->currency);
 
         $response = $this->vPos->authorize($authorizeRequest);
 
@@ -176,6 +190,7 @@ class VposTest extends TestCase
         $authorizeRequest->setOrderId(1);
         $authorizeRequest->setAmount($this->amount);
         $authorizeRequest->setInstallment($this->installment);
+        $authorizeRequest->setCurrency($this->currency);
 
         $response = $this->vPos->authorize($authorizeRequest);
 
@@ -197,6 +212,7 @@ class VposTest extends TestCase
         $captureRequest->setTransactionReference($params['transactionReference']);
         $captureRequest->setAmount($params['amount']);
         $captureRequest->setInstallment($params['installment']);
+        $captureRequest->setCurrency($this->currency);
 
         $response = $this->vPos->capture($captureRequest);
 
@@ -212,6 +228,7 @@ class VposTest extends TestCase
         $captureRequest->setTransactionReference('0000000041P0502141');
         $captureRequest->setAmount($this->amount);
         $captureRequest->setInstallment(1);
+        $captureRequest->setCurrency($this->currency);
 
         $response = $this->vPos->capture($captureRequest);
 
@@ -267,6 +284,7 @@ class VposTest extends TestCase
         $purchaseRequest->setOrderId($this->orderId);
         $purchaseRequest->setAmount($this->amount);
         $purchaseRequest->setInstallment($this->installment);
+        $purchaseRequest->setCurrency($this->currency);
 
         $response = $this->vPos->purchase3D($purchaseRequest);
 
