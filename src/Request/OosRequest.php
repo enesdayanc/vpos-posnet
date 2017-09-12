@@ -110,7 +110,7 @@ class OosRequest implements RequestInterface
     /**
      * @return Currency
      */
-    public function getCurrency(): Currency
+    public function getCurrency()
     {
         return $this->currency;
     }
