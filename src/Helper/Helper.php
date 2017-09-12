@@ -284,9 +284,6 @@ class Helper
             case \PaymentGateway\VPosPosnet\Constant\Currency::USD:
                 $requestCurrencyCode = RequestCurrencyCode::US;
                 break;
-            case \PaymentGateway\VPosPosnet\Constant\Currency::GBP:
-                $requestCurrencyCode = RequestCurrencyCode::GB;
-                break;
         }
 
         if (empty($requestCurrencyCode)) {
