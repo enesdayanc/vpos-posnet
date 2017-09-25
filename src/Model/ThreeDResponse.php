@@ -160,10 +160,10 @@ class ThreeDResponse
 
     /**
      * @param Setting $setting
+     * @param $orderId
      * @return Response
-     * @throws ValidationException
      */
-    public function getResponseClass(Setting $setting)
+    public function getResponseClass(Setting $setting, $orderId)
     {
         $this->validate();
 
@@ -173,7 +173,9 @@ class ThreeDResponse
 
         $responseClass = new Response();
 
-        if ($validSignature) {
+        if ($this->getXid() != $orderId) {
+            $responseClass->setErrorMessage('Order id not match');
+        } elseif ($validSignature) {
 
             if (in_array($oosResolveMerchantResponse->getMdStatus(), $setting->getAllowedThreeDMdStatus())) {
                 $httpClient = new HttpClient($setting);

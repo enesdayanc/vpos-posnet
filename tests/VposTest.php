@@ -307,7 +307,7 @@ class VposTest extends TestCase
         $threeDResponse->setXid('00000000MOb21432af7b');
         $threeDResponse->setMerchantId('6706598320');
 
-        $response = $this->vPos->handle3DResponse($threeDResponse);
+        $response = $this->vPos->handle3DResponse($threeDResponse, '00000000MOb21432af7b');
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertFalse($response->isSuccessful());

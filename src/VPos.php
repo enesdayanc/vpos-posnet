@@ -91,9 +91,9 @@ class VPos
         return $httpClient->send($requestElements, $url);
     }
 
-    public function handle3DResponse(ThreeDResponse $threeDResponse)
+    public function handle3DResponse(ThreeDResponse $threeDResponse, $orderId)
     {
-        return $threeDResponse->getResponseClass($this->setting);
+        return $threeDResponse->getResponseClass($this->setting, $orderId);
     }
 
     /**
