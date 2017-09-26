@@ -173,7 +173,7 @@ class ThreeDResponse
 
         $responseClass = new Response();
 
-        if ($this->getXid() != $orderId) {
+        if (ltrim($this->getXid(), '0') != $orderId) {
             $responseClass->setErrorMessage('Order id not match');
         } elseif ($validSignature) {
 
