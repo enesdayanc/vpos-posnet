@@ -55,7 +55,7 @@ class VposTest extends TestCase
         $this->vPos = new VPos($settings);
 
         $card = new Card();
-        $card->setCreditCardNumber("4506347022052795");
+        $card->setCreditCardNumber("4048097007190236");
         $card->setExpiryMonth('02');
         $card->setExpiryYear('20');
         $card->setCvv('000');
@@ -64,7 +64,7 @@ class VposTest extends TestCase
 
         $iso4217 = new ISO4217();
 
-        $this->currency = $iso4217->getByCode('EUR');
+        $this->currency = $iso4217->getByCode('TRY');
 
         $this->amount = rand(1, 100);
         $this->orderId = 'MO' . substr(md5(microtime() . rand()), 0, 10);
@@ -247,7 +247,7 @@ class VposTest extends TestCase
 //    {
 //        $refundRequest = new RefundRequest();
 //        $refundRequest->setAmount($params['amount'] / 2);
-//        $refundRequest->setTransactionReference($params['transactionReference']);
+//        $refundRequest->setOrderId($params['orderId']);
 //
 //        $response = $this->vPos->refund($refundRequest);
 //
@@ -265,7 +265,7 @@ class VposTest extends TestCase
     public function testVoid($params)
     {
         $voidRequest = new VoidRequest();
-        $voidRequest->setTransactionReference($params['transactionReference']);
+        $voidRequest->setOrderId($params['orderId']);
         $voidRequest->setReverseTransaction(ReverseTransaction::SALE);
 
         $response = $this->vPos->void($voidRequest);
@@ -307,7 +307,7 @@ class VposTest extends TestCase
         $threeDResponse->setXid('00000000MOb21432af7b');
         $threeDResponse->setMerchantId('6706598320');
 
-        $response = $this->vPos->handle3DResponse($threeDResponse, '00000000MOb21432af7b');
+        $response = $this->vPos->handle3DResponse($threeDResponse, 'MOb21432af7b');
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertFalse($response->isSuccessful());

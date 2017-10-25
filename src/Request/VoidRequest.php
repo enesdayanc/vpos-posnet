@@ -15,23 +15,23 @@ use PaymentGateway\VPosPosnet\Setting\Setting;
 
 class VoidRequest implements RequestInterface
 {
-    private $transactionReference;
+    private $orderId;
     private $reverseTransaction;
 
     /**
      * @return mixed
      */
-    public function getTransactionReference()
+    public function getOrderId()
     {
-        return $this->transactionReference;
+        return $this->orderId;
     }
 
     /**
-     * @param mixed $transactionReference
+     * @param mixed $orderId
      */
-    public function setTransactionReference($transactionReference)
+    public function setOrderId($orderId)
     {
-        $this->transactionReference = $transactionReference;
+        $this->orderId = $orderId;
     }
 
     /**
@@ -52,7 +52,7 @@ class VoidRequest implements RequestInterface
 
     public function validate()
     {
-        Validator::validateNotEmpty('transactionReference', $this->getTransactionReference());
+        Validator::validateNotEmpty('orderId', $this->getOrderId());
         Validator::validateReverseTransaction($this->getReverseTransaction());
     }
 
@@ -70,7 +70,7 @@ class VoidRequest implements RequestInterface
             "tid" => $credential->getTerminalId(),
             "reverse" => array(
                 "transaction" => $this->getReverseTransaction(),
-                "hostLogKey" => $this->getTransactionReference(),
+                "orderID" => Helper::orderIdParser($this->getOrderId()),
             ),
         );
 

@@ -17,7 +17,7 @@ use PaymentGateway\VPosPosnet\Setting\Setting;
 class RefundRequest implements RequestInterface
 {
     private $amount;
-    private $transactionReference;
+    private $orderId;
     /** @var  Currency */
     private $currency;
 
@@ -40,17 +40,17 @@ class RefundRequest implements RequestInterface
     /**
      * @return mixed
      */
-    public function getTransactionReference()
+    public function getOrderId()
     {
-        return $this->transactionReference;
+        return $this->orderId;
     }
 
     /**
-     * @param mixed $transactionReference
+     * @param mixed $orderId
      */
-    public function setTransactionReference($transactionReference)
+    public function setOrderId($orderId)
     {
-        $this->transactionReference = $transactionReference;
+        $this->orderId = $orderId;
     }
 
     /**
@@ -72,7 +72,7 @@ class RefundRequest implements RequestInterface
     public function validate()
     {
         Validator::validateAmount($this->getAmount());
-        Validator::validateNotEmpty('transactionReference', $this->getTransactionReference());
+        Validator::validateNotEmpty('orderId', $this->getOrderId());
         Validator::validateCurrency($this->getCurrency());
     }
 
@@ -90,7 +90,7 @@ class RefundRequest implements RequestInterface
             "tid" => $credential->getTerminalId(),
             "return" => array(
                 "amount" => Helper::amountParser($this->getAmount()),
-                "hostLogKey" => $this->getTransactionReference(),
+                "orderID" => Helper::orderIdParser($this->getOrderId()),
                 "currencyCode" => Helper::getRequestCurrencyCodeFromISO4217($this->getCurrency()),
             ),
         );
