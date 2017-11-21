@@ -19,6 +19,7 @@ use PaymentGateway\VPosPosnet\Model\ThreeDResponse;
 use PaymentGateway\VPosPosnet\Response\OosResolveMerchantResponse;
 use PaymentGateway\VPosPosnet\Response\OosResponse;
 use PaymentGateway\VPosPosnet\Response\Response;
+use PaymentGateway\VPosPosnet\Setting\MockBank;
 use PaymentGateway\VPosPosnet\Setting\Setting;
 use PaymentGateway\VPosPosnet\Setting\YapiKredi;
 use PaymentGateway\VPosPosnet\Setting\YapiKrediTest;
@@ -230,6 +231,9 @@ class Helper
                 break;
             case BankType::YAPI_KREDI_TEST:
                 $setting = new YapiKrediTest();
+                break;
+            case BankType::MOCKBANK:
+                $setting = new MockBank();
                 break;
         }
 

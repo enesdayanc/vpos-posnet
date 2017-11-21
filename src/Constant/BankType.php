@@ -13,4 +13,5 @@ class BankType
 {
     const YAPI_KREDI = 'YAPI_KREDI';
     const YAPI_KREDI_TEST = 'YAPI_KREDI_TEST';
+    const MOCKBANK = 'MOCKBANK';
 }
