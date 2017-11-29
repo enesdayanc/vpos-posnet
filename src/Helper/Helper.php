@@ -52,11 +52,9 @@ class Helper
         $response->setRawData($xml);
         $response->setRequestRawData($requestRawData);
 
-        $data = new stdClass();
+        $data = @simplexml_load_string($xml);
 
-        try {
-            $data = new SimpleXMLElement($xml);
-        } catch (Exception $exception) {
+        if (!$data) {
             if (empty($xml)) {
                 throw new ValidationException('Invalid Xml Response', 'INVALID_XML_RESPONSE');
             } else {
