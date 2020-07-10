@@ -44,9 +44,9 @@ class VposTest extends TestCase
     public function setUp()
     {
         $credential = new Credential();
-        $credential->setPosnetId(POSNET_ID);
-        $credential->setMerchantId(MERCHANT_ID);
-        $credential->setTerminalId(TERMINAL_ID);
+        $credential->setPosnetId(getenv('POSNET_ID'));
+        $credential->setMerchantId(getenv('MERCHANT_ID'));
+        $credential->setTerminalId(getenv('TERMINAL_ID'));
 
         $settings = new YapiKrediTest();
         $settings->setCredential($credential);
